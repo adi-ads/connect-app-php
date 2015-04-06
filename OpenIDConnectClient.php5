@@ -129,6 +129,16 @@ class OpenIDConnectClient
     private $accessToken;
 
     /**
+     * @var string to store id token
+     */
+    private $id_token;
+
+    /**
+     * @var string to store claims
+     */
+    private $claims;
+
+    /**
      * @var array holds scopes
      */
     private $scopes = array();
@@ -214,6 +224,10 @@ class OpenIDConnectClient
                 // Save the access token
                 $this->accessToken = $token_json->access_token;
 
+                $this->id_token = $token_json->id_token;
+
+                $this->claims = $claims;
+
                 // Success!
                 return true;
 
@@ -244,6 +258,23 @@ class OpenIDConnectClient
     }
 
     /**
+     * Check if user is already authenticated or not
+     */
+    public function isAuthenticated() {
+      $currentTime = time();
+      if( isset($this->id_token) && ($currentTime < $this->claims->exp) ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function getClaims() {
+      $dummy = $this->claims->exp;
+      return $dummy;
+    }
+
+    /**
      * Get's anything that we need configuration wise including endpoints, and other values
      *
      * @param $param
@@ -269,8 +300,8 @@ class OpenIDConnectClient
 
         return $this->providerConfig[$param];
     }
-    
-    
+  
+
     /**
      * @param $url Sets redirect URL for auth flow
      */
@@ -286,7 +317,7 @@ class OpenIDConnectClient
      * @return string
      */
     public function getRedirectURL() {
-        
+
         // If the redirect URL has been set then return it.
         if (property_exists($this, 'redirectURL') && $this->redirectURL) {
             return $this->redirectURL;
@@ -464,11 +495,14 @@ class OpenIDConnectClient
      * @return bool
      */
     private function verifyJWTclaims($claims) {
-
+      if(isset($claims->nonce)) {
         return (($claims->iss == $this->getProviderURL())
             && (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud)))
             && ($claims->nonce == $_SESSION['openid_connect_nonce']));
-
+      } else {
+        return (($claims->iss == $this->getProviderURL())
+            && (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud))));
+      }
     }
 
     /**

@@ -1,14 +1,12 @@
 <?php
 
-require "OpenIDConnectClient.php5";
+require "connect.php";
 
-$oidc = new OpenIDConnectClient('http://openid.local/',
-                                'ClientIDHere',
-                                'ClientSecretHere');
+if(!$oidc->isAuthenticated()) {
+  $oidc->authenticate();
+}
 
-$oidc->authenticate();
 $name = $oidc->requestUserInfo('given_name');
-
 ?>
 
 <html>
