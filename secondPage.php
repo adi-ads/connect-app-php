@@ -2,16 +2,13 @@
 
 require "connect.php";
 
-if( !$oidc->isAuthenticated() ) {
-  //echo 'check - '.$oidc->isAuthenticated();
-  //echo json_encode($_SESSION);
+if( !isset($_SESSION['user']['name']) ) {
   $oidc->authenticate();
 } else {
-  echo 'Logged in - ';
+  echo 'Logged in';
 }
 
 echo $checkFlag;
-echo $oidc->isAuthenticated();
 
 $name = $_SESSION['user']['name'];
 ?>
@@ -28,7 +25,7 @@ $name = $_SESSION['user']['name'];
 <body>
 
     <div>
-        Hello <?php echo $name; ?>
+        Welcome to Second Page, <?php echo $name; ?>
     </div>
 
 </body>

@@ -226,7 +226,7 @@ class OpenIDConnectClient
 
                 $this->id_token = $token_json->id_token;
 
-                $this->claims = $claims;
+                $_SESSION['claims'] = $claims;
 
                 // Success!
                 return true;
@@ -262,7 +262,7 @@ class OpenIDConnectClient
      */
     public function isAuthenticated() {
       $currentTime = time();
-      if( isset($this->id_token) && ($currentTime < $this->claims->exp) ) {
+      if( isset($_SESSION['user']) && ($currentTime < $_SESSION['claims']->exp) ) {
         return true;
       } else {
         return false;
@@ -300,7 +300,7 @@ class OpenIDConnectClient
 
         return $this->providerConfig[$param];
     }
-  
+
 
     /**
      * @param $url Sets redirect URL for auth flow
@@ -368,6 +368,9 @@ class OpenIDConnectClient
         // State essentially acts as a session key for OIDC
         $state = $this->generateRandString();
         $_SESSION['openid_connect_state'] = $state;
+
+        //Requested Page
+        $_SESSION['request_url'] = $_SERVER['REQUEST_URI'];
 
         $auth_params = array_merge($this->authParams, array(
             'response_type' => $response_type,
