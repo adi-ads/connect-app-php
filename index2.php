@@ -2,13 +2,9 @@
 
 require "connect.php";
 
-if( !isset($_SESSION['user']['name']) ) {
+if( !$oidc->isAuthenticated() ) {
   $oidc->authenticate();
-} else {
-  echo 'Logged in';
 }
-
-echo $checkFlag;
 
 $name = $_SESSION['user']['name'];
 ?>

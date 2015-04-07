@@ -3,15 +3,8 @@
 require "connect.php";
 
 if( !$oidc->isAuthenticated() ) {
-  //echo 'check - '.$oidc->isAuthenticated();
-  //echo json_encode($_SESSION);
   $oidc->authenticate();
-} else {
-  echo 'Logged in - ';
 }
-
-echo $checkFlag;
-echo $oidc->isAuthenticated();
 
 $name = $_SESSION['user']['name'];
 ?>

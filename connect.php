@@ -9,7 +9,6 @@ if (!isset($oidc)) {
 
   $oidc->setRedirectURL('http://openid.local/callback.php');
   $oidc->addScope(['openid','profile']);
-  $checkFlag = 'created';
 }
 
 ?>
