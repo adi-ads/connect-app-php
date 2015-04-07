@@ -370,7 +370,11 @@ class OpenIDConnectClient
         $_SESSION['openid_connect_state'] = $state;
 
         //Requested Page
-        $_SESSION['request_url'] = $_SERVER['REQUEST_URI'];
+        if(isset($_SERVER['HTTP_REFERER'])) {
+          $_SESSION['request_url'] = $_SERVER['HTTP_REFERER'];
+        } else {
+          $_SESSION['request_url'] = '/';
+        }
 
         $auth_params = array_merge($this->authParams, array(
             'response_type' => $response_type,

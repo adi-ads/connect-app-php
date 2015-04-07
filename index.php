@@ -2,10 +2,6 @@
 
 require "connect.php";
 
-if( !$oidc->isAuthenticated() ) {
-  $oidc->authenticate();
-}
-
 $name = $_SESSION['user']['name'];
 ?>
 
@@ -21,7 +17,11 @@ $name = $_SESSION['user']['name'];
 <body>
 
     <div>
+      <?php if(isset($_SESSION['user']['name'])) { ?>
         Hello <?php echo $name; ?>
+      <?php } else { ?>
+        <a href='callback.php'>Login</a>
+      <?php } ?>
     </div>
 
 </body>
