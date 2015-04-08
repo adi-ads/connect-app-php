@@ -1,6 +1,6 @@
 <?php
 
-require "connect.php";
+require "OpenIDConnectLogin.php";
 
 $name = $_SESSION['user']['name'];
 ?>

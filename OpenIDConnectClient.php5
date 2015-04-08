@@ -129,16 +129,6 @@ class OpenIDConnectClient
     private $accessToken;
 
     /**
-     * @var string to store id token
-     */
-    private $id_token;
-
-    /**
-     * @var string to store claims
-     */
-    private $claims;
-
-    /**
      * @var array holds scopes
      */
     private $scopes = array();
@@ -224,10 +214,6 @@ class OpenIDConnectClient
                 // Save the access token
                 $this->accessToken = $token_json->access_token;
 
-                $this->id_token = $token_json->id_token;
-
-                $_SESSION['claims'] = $claims;
-
                 // Success!
                 return true;
 
@@ -255,23 +241,6 @@ class OpenIDConnectClient
      */
     public function addAuthParam($param) {
         $this->authParams = array_merge($this->authParams, (array)$param);
-    }
-
-    /**
-     * Check if user is already authenticated or not
-     */
-    public function isAuthenticated() {
-      $currentTime = time();
-      if( isset($_SESSION['user']) && ($currentTime < $_SESSION['claims']->exp) ) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    public function getClaims() {
-      $dummy = $this->claims->exp;
-      return $dummy;
     }
 
     /**
@@ -368,13 +337,6 @@ class OpenIDConnectClient
         // State essentially acts as a session key for OIDC
         $state = $this->generateRandString();
         $_SESSION['openid_connect_state'] = $state;
-
-        //Requested Page
-        if(isset($_SERVER['HTTP_REFERER'])) {
-          $_SESSION['request_url'] = $_SERVER['HTTP_REFERER'];
-        } else {
-          $_SESSION['request_url'] = '/';
-        }
 
         $auth_params = array_merge($this->authParams, array(
             'response_type' => $response_type,
@@ -502,6 +464,7 @@ class OpenIDConnectClient
      * @return bool
      */
     private function verifyJWTclaims($claims) {
+
       if(isset($claims->nonce)) {
         return (($claims->iss == $this->getProviderURL())
             && (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud)))
@@ -510,6 +473,7 @@ class OpenIDConnectClient
         return (($claims->iss == $this->getProviderURL())
             && (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud))));
       }
+
     }
 
     /**

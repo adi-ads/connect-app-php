@@ -1,12 +1,13 @@
 <?php
-require "connect.php";
 
-if( !$oidc->isAuthenticated() ) {
-  $oidc->authenticate();
-  $_SESSION['user']['name'] = $oidc->requestUserInfo('given_name');
-  header("Location:".$_SESSION['request_url']);
-} else {
-  header("Location:".$_SESSION['request_url']);
+require "OpenIDConnectLogin.php";
+
+//Requested Page
+if(isset($_SERVER['HTTP_REFERER'])) {
+  $_SESSION['request_url'] = $_SERVER['HTTP_REFERER'];
 }
+
+$auth = new OpenIDConnectLogin();
+$auth->authenticate();
 
 ?>
