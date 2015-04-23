@@ -19,6 +19,8 @@ $name = $_SESSION['user']['name'];
     <div>
       <?php if(isset($_SESSION['user']['name'])) { ?>
         Hello <?php echo $name; ?>
+        <br />
+        <a href='logout.php'>Logout</a>
       <?php } else { ?>
         <a href='callback.php'>Login</a>
       <?php } ?>
